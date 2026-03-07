@@ -31,7 +31,7 @@ connectDB();
 
 
 // Test Route
-app.get("/", (req, res) => {
+app.get("/api/test", (req, res) => {
   res.send("API is running...");
 });
 
