@@ -6,7 +6,7 @@ import Product from "../models/Product.js";
 ============================== */
 export const getCart = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const cart = await Cart.findOne({ user: userId })
       .populate("items.product");
@@ -39,6 +39,7 @@ export const getCart = async (req, res) => {
 export const addToCart = async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log("userId::",userId);
     const { productId, quantity } = req.body;
 
     const product = await Product.findById(productId);
