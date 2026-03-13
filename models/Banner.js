@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const bannerSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      enum: ["hero", "flash"], // ✅ add this
+    },
+
     title: {
       type: String,
       trim: true,

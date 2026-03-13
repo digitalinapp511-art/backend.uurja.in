@@ -1,6 +1,7 @@
 import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
+import razorpay from "../config/razorpay.js";
 
 
 /* ==================================
@@ -58,6 +59,7 @@ export const placeOrder = async (req, res) => {
       orderItems.push({
         product: product._id,
         name: product.productName,
+        images: product.images[0],
         quantity: item.quantity,
         price: item.price,
       });
@@ -99,6 +101,93 @@ export const placeOrder = async (req, res) => {
     });
   }
 };
+
+
+export const buyNowOrder = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const {
+      productId,
+      quantity,
+      fullName,
+      email,
+      phone,
+      houseNo,
+      landmark,
+      city,
+      state,
+      pincode,
+      country,
+    } = req.body;
+
+    if (!productId || !quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "Product and quantity required",
+      });
+    }
+
+    if (!fullName || !phone || !houseNo || !city || !state || !pincode) {
+      return res.status(400).json({
+        success: false,
+        message: "Required fields missing",
+      });
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product || product.stock < quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "Insufficient stock",
+      });
+    }
+
+    // reduce stock
+    product.stock -= quantity;
+    await product.save();
+
+    const order = await Order.create({
+      user: userId,
+      items: [
+        {
+          product: product._id,
+          name: product.productName,
+          images: product.images[0],
+          quantity: quantity,
+          price: product.salePrice,
+        },
+      ],
+      shippingAddress: {
+        fullName,
+        email,
+        phone,
+        houseNo,
+        landmark,
+        city,
+        state,
+        pincode,
+        country: country || "India",
+      },
+      totalAmount: product.salePrice * quantity,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Buy Now order placed successfully",
+      data: order,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 
 
 /* ==================================
@@ -162,7 +251,7 @@ export const cancelOrder = async (req, res) => {
     }
 
     // Update order status
-    order.orderStatus = "Cancelled";
+    order.orderStatus = "Cancelled by User";
 
     // If payment done → mark refund pending
     if (order.paymentStatus === "Paid") {
@@ -199,6 +288,8 @@ export const adminUpdateOrderStatus = async (req, res, next) => {
       "Shipped",
       "Delivered",
       "Cancelled",
+      "Cancelled by User",   
+      "Cancelled by Admin",
     ];
 
     const allowedPaymentStatus = [
@@ -315,10 +406,47 @@ export const getAllOrdersAdmin = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("getAllOrdersAdmin error:", error.message);
     res.status(500).json({
       success: false,
       message: "Failed to fetch orders",
       error: error.message,
+    });
+  }
+};
+
+
+//RozerPay
+export const createRazorpayOrder = async (req, res) => {
+  try {
+
+    const { amount } = req.body;
+    console.log("Amount:", amount);                          // ✅ check amount
+    console.log("KEY:", process.env.RAZORPAY_KEY_ID);        // ✅ check key
+    console.log("SECRET:", process.env.RAZORPAY_KEY_SECRET);
+
+    const options = {
+      amount: amount * 100, // paise
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.json({
+      success: true,
+      data: {
+        order,
+        key: process.env.RAZORPAY_KEY_ID,
+      }
+    });
+
+  } catch (error) {
+    console.error("Razorpay Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create Razorpay order",
+      error: error.message
     });
   }
 };

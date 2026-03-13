@@ -6,7 +6,10 @@ import {
   getMyOrders,
   cancelOrder,
   adminUpdateOrderStatus,  // admin`s order status update controller
-  getAllOrdersAdmin
+  getAllOrdersAdmin,
+  buyNowOrder,
+ createRazorpayOrder 
+
 } from "../controllers/order.controller.js";
 
 const router = express.Router();
@@ -16,6 +19,10 @@ const router = express.Router();
 router.post("/place", protect,  placeOrder);
 router.get("/my-orders", protect, getMyOrders);
 router.put("/cancel/:id", protect, cancelOrder);
+router.put("/buy-now", protect, buyNowOrder)
+// Razorpay order create
+router.post("/razorpay-order", protect, createRazorpayOrder);
+
 
 
 // admin route

@@ -6,7 +6,13 @@ import Product from "../models/Product.js";
 ============================== */
 export const getCart = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    if (!req.user) {
+      return res.status(401).json({
+        message: "User not authenticated"
+      });
+    }
+
+    const userId = req.user._id;
 
     const cart = await Cart.findOne({ user: userId })
       .populate("items.product");
@@ -39,7 +45,7 @@ export const getCart = async (req, res) => {
 export const addToCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("userId::",userId);
+    console.log("userId::", userId);
     const { productId, quantity } = req.body;
 
     const product = await Product.findById(productId);
@@ -158,6 +164,12 @@ export const removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId } = req.body;
+    console.log("product is provided")
+    if(!productId){
+      console.log("product id not provide in request body")
+      return res.json({message: "product id not provide in request body"})
+    }
+    console.log("productId:", productId)
 
     const cart = await Cart.findOne({ user: userId });
 
