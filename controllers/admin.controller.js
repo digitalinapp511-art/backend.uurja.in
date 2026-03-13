@@ -3,11 +3,7 @@ import jwt from "jsonwebtoken";
 export const adminLogin = async (req, res) => {
   try {
     const { mobile, pin } = req.body;
-    console.log("Received mobile:", mobile, typeof mobile);
-    console.log("Received pin:", pin, typeof pin);
-    console.log("ENV mobile:", process.env.ADMIN_MOBILE, typeof process.env.ADMIN_MOBILE);
-    console.log("ENV pin:", process.env.ADMIN_PIN, typeof process.env.ADMIN_PIN);
-
+    
     if (!mobile || !pin) {
       return res.status(400).json({
         success: false,

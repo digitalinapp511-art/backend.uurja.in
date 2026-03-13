@@ -81,7 +81,7 @@ export const placeOrder = async (req, res) => {
         country: country || "India",
 
       },
-      paymentMethod: paymentMethod || "cash_on_delivery",
+      paymentMethod: paymentMethod || "COD",
       totalAmount: cart.totalAmount,
     });
 
@@ -122,6 +122,7 @@ export const buyNowOrder = async (req, res) => {
       state,
       pincode,
       country,
+      paymentMethod,
     } = req.body;
 
     if (!productId || !quantity) {
@@ -173,6 +174,7 @@ export const buyNowOrder = async (req, res) => {
         pincode,
         country: country || "India",
       },
+      paymentMethod: paymentMethod || "COD",
       totalAmount: product.salePrice * quantity,
     });
 

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "cd ../frontend && npm run build"
+    "build": "echo \"No build step required\""
   },
   "type": "module",
   "keywords": [],
