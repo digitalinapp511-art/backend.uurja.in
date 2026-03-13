@@ -21,6 +21,7 @@ export const placeOrder = async (req, res) => {
       state,
       pincode,
       country,
+      paymentMethod,
     } = req.body;
 
     if (!fullName || !phone || !houseNo || !city || !state || !pincode) {
@@ -78,7 +79,9 @@ export const placeOrder = async (req, res) => {
         state,
         pincode,
         country: country || "India",
+
       },
+      paymentMethod: paymentMethod || "cash_on_delivery",
       totalAmount: cart.totalAmount,
     });
 
@@ -288,7 +291,7 @@ export const adminUpdateOrderStatus = async (req, res, next) => {
       "Shipped",
       "Delivered",
       "Cancelled",
-      "Cancelled by User",   
+      "Cancelled by User",
       "Cancelled by Admin",
     ];
 

@@ -50,7 +50,7 @@ const orderSchema = new mongoose.Schema(
 
     orderStatus: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled","Cancelled by User","Cancelled by Admin"],
+      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Cancelled by User", "Cancelled by Admin"],
       default: "Pending",
     },
 
@@ -60,16 +60,10 @@ const orderSchema = new mongoose.Schema(
       default: "Pending",
     },
     paymentMethod: {
-  type: String,
-  enum: [
-        "cash_on_delivery",
-        "upi",
-        "credit_debit_card",
-        "net_banking",
-        "wallets"
-      ],
-  default: "cash_on_delivery",
-},
+      type: String,
+      enum: ["COD", "UPI", "CARD", "NET_BANKING", "WALLET"],
+      // default: "cash_on_delivery",
+    },
   },
   { timestamps: true }
 );
