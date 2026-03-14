@@ -17,6 +17,7 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
+    "https://backend.uurja.in",
     "http://localhost:5173",
     "https://uurja.in",
     "https://www.uurja.in"
