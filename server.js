@@ -19,7 +19,6 @@ app.use(cors({
   origin: [
     "https://uurja.in",
     "http://localhost:5173",
-    "http://localhost:5174",
     "https://www.uurja.in"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],

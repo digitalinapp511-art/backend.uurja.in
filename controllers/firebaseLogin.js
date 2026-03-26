@@ -188,6 +188,7 @@ import { generateToken } from "../utils/jwt.js";
 export const firebaseLogin = async (req, res) => {
   try {
     const {phone } = req.body;
+    // console.log("Received phone for Firebase login:", phone);
 
     // ✅ Validate input
     if (!phone) {
@@ -199,14 +200,6 @@ export const firebaseLogin = async (req, res) => {
 
     // ✅ Normalize both phones
     const cleanFrontendPhone = phone.replace(/\D/g, "").slice(-10);
-
-    // 🔒 Match phone (VERY IMPORTANT)
-    if (cleanFrontendPhone !== phone) {
-      return res.status(401).json({
-        success: false,
-        message: "Phone number mismatch",
-      });
-    }
 
     // 🔥 Find or Create User
     let user = await User.findOne({ mobile: cleanFrontendPhone });
