@@ -231,11 +231,10 @@ export const firebaseLogin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Firebase Auth Error:", error);
-
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired Firebase token in " + error.message,
-    });
+  console.error("Actual Backend Error:", error); // Check your server logs for this!
+  return res.status(500).json({ // Use 500 for server errors
+    success: false,
+    message: "Server Error: " + error.message, 
+  });
   }
 };
